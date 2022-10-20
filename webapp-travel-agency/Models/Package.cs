@@ -9,6 +9,8 @@
         public int? NumberOfDays { get; set; }
         public int? NumberOfDestinations { get; set; }
         public double? Price { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
 
         public Package()
         {
