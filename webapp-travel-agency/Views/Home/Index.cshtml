@@ -2,7 +2,77 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>I nostri Pacchetti</h1>
+
+<body onload="cerca()">
+    <div class="container">
+        <input class="js-search" type="text" placeholder="Cerca" />
+        <div class="row">
+        </div>
+    </div>
+    <div class="row js_no_post text-center d-none">
+        <div class="col-12">
+            <h3>Non hai inserito nessuan smart box</h3>
+        </div>
+    </div>
+    <div class="row">
+        @*qui verranno mostrati gli elementi*@
+    </div>
+</body>
+
+
+<script type="text/javascript">
+    const Package = document.querySelector(".row");
+    const Search = document.querySelector(".js-search")
+    let list;
+    Search.addEventListener("keyup", cerca)
+    function cerca() {
+        let name = this.value;
+        risultati(name);
+    }
+    function risultati(name) {
+        axios.get("/api/Packages/GetPackages", {
+            params: {
+                name: name
+            }
+        })
+            .then(function (response) {
+                console.log(response);
+                list = response.data;
+                if (list.length > 0) {
+                    Package.innerHTML = ""
+                    list.forEach(pa => {
+                        Package.innerHTML +=
+                            ` <div class="col-12 col-md-4 p-2">
+                                        <div class="card post h-100">
+                                            <a href="/Home/Details/${pa.Id}">
+                                            <img src="${pa.Image}" class="card-img-top" alt="...">
+                                            <div class="card-body">
+                                                <h5 class="card-title">${pa.Name}</h5>
+                                                <p class="card-text">${pa.Description}</p>
+                                                <p class="card-text">Prezzo: ${pa.Price}</p>
+                                                <p class="card-text">Paese: ${pa.Country}</p>
+                                                <p class="card-text">Città: ${pa.City}</p>
+                                            </div>
+                                          </a>
+                                        </div>
+                                    </div>`
+                    })
+                } else {
+                    Actor.innerHTML = "<h1>Non ci sono pacchetti</h1>"
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+    function deletePackage(id) {
+        axios.delete('/api/Packages/DeletePackage/' + id).then(res => {
+            console.log(res);
+            loadList("");
+            alert("Pacchetto eliminato.");
+        }).catch(err => {
+            console.log(err);
+            alert("Il pacchetto non può essere eliminato.");
+        })
+    }</script>

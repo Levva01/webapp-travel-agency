@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Numerics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webapp_travel_agency.Data;
@@ -19,6 +20,23 @@ namespace webapp_travel_agency.Controllers.Api
         public PackagesController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        [HttpGet]
+        public IActionResult GetPackages(string? name)
+        {
+            IQueryable<Package> packages;
+
+            if (name != null)
+            {
+                packages = _context.Packages.Where(x => x.Name.ToLower().Contains(name.ToLower()));
+            }
+            else
+            {
+                packages = _context.Packages;
+            }
+
+            return Ok(packages.ToList<Package>());
         }
 
         // GET: api/Packages
