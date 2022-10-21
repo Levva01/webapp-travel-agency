@@ -1,0 +1,38 @@
+﻿<h1>Dettagli Pacchetto</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="js_package_container">
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    debugger;
+    let id = window.location.pathname.split('/')[3];
+    axios.get(`/api/Packages/GetPackage/${id}`).then(res => {
+        const pa = res.data;
+        document.querySelector('.js_package_container').innerHTML +=
+            `
+                <div class="col-4 py-2" >
+    @*<a href="@Url.Action("Details", "Home", new {Id = actor.id})" class="btn btn-danger my-3">Details*@
+                    <img src="${pa.Image}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">${pa.Name}</h5>
+                            <p class="card-text">${pa.Description}</p>
+                            <p class="card-text">Prezzo: ${pa.Price}</p>
+                            <p class="card-text">Paese: ${pa.Country}</p>
+                            <p class="card-text">Città: ${pa.City}</p>
+                        </div>
+                    <div class="d-flex justify-content-center align-items-center gap-4">
+                        <a href="@Url.Action("Index", "Packages")" class="btn btn- my-3">Home</a>
+                        <a href="@Url.Action("Edit", "Packages")" class="btn btn-danger my-3">Edit</a>
+
+                    </div>
+                </div>
+                `;
+    }).catch(err => {
+        console.log(err);
+    })
+
+</script>

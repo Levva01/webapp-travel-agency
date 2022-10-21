@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webapp_travel_agency.Data;
 using webapp_travel_agency.Models;
+using Microsoft.Data.SqlClient;
 
 namespace webapp_travel_agency.Controllers.Api
 {
@@ -107,15 +108,18 @@ namespace webapp_travel_agency.Controllers.Api
         public async Task<IActionResult> DeletePackage(int id)
         {
             var package = await _context.Packages.FindAsync(id);
-            if (package == null)
+            try
             {
+                _context.Packages.Remove(package);
+                await _context.SaveChangesAsync();
+            }
+            catch (SqlException)
+            {
+                return NotFound();
                 return NotFound();
             }
 
-            _context.Packages.Remove(package);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return RedirectToPage("Index");
         }
 
         private bool PackageExists(int id)
